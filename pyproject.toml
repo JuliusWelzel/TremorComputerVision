@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "src"
+version = "0.1.0"
+description = "A project classification of functional tremor based of video analysis using the [MediaPipe Hands Pipeline](https://google.github.io/mediapipe/solutions/hands.html)."
+authors = ["Julius Welzel <julius.welzel@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fooof = "^1.1.0"
+matplotlib = "^3.8.2"
+mne = "^1.6.0"
+numpy = "^1.26.2"
+mediapipe = "^0.10.8"
+pyxdf = "^1.16.4"
+pylsl = "^1.16.2"
+scipy = "^1.11.4"
+pandas = "^2.1.3"
+ipykernel = "^6.26.0"
+astropy = "^5.3.4"
+seaborn = "^0.13.0"
+scikit-learn = "^1.3.2"
+emd = "^0.6.2"
+pingouin = "^0.5.3"
+openpyxl = "^3.1.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
