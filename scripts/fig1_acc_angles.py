@@ -91,8 +91,8 @@ axs.set_xlabel('Camera angle x-axis [°]')
 
 # add labels 1,2,3 to the plots at (-40,-45), (0,0), (30,-60)
 axs.text(2, 4, '1', ha='center', va='center', color='black', fontsize=20)
-axs.text(6, 6, '2', ha='center', va='center', color='black', fontsize=20)
-axs.text(3, 8, '3', ha='center', va='center', color='black', fontsize=20)
+axs.text(6, 6, '2', ha='center', va='center', color='white', fontsize=20)
+axs.text(3, 8, '3', ha='center', va='center', color='white', fontsize=20)
 
 # Add color bar
 cbar = fig.colorbar(image)

@@ -1,0 +1,21 @@
+subject_number;diagnosis;tremor_condition;Side;TETRAS;Comment
+001;FUNC;rest;Right;2.5;
+002;ETPLUS;hold;Right;2;
+003;ET;hold;Left;2;
+004;ET;hold;Left;3;
+005;PD;rest;Left;3.5;
+006;ETPLUS;hold;Left;3;
+007;ETPLUS;hold;Right;3;
+008;PHYSIO;rest;Right;0.5;
+009;ETPLUS;hold;Right;2;
+010;ET;hold;Right;1;Thumb OMC marker missing
+011;ET;hold;Left;3;
+012;ET;hold;Left;2;
+013;ETPLUS;hold;Right;2.5;
+014;PD;rest;Left;1.5;
+015;PD;rest;Right;3.5;
+016;ET;hold;Right;2;
+017;PD;rest;Right;1;
+018;PD;rest;Left;3;
+019;ET;hold;Right;1;
+020;PD/ET;hold;Right;1.5;
