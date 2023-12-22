@@ -73,7 +73,7 @@ def calculate_displacement(amplitudes, srate = 30):
     filtered_signal = signal.filtfilt(b, a, np.array(amplitudes))
 
     # Performing peak detection on the filtered signal
-    filtered_peaks, _ = signal.find_peaks(filtered_signal)
+    filtered_peaks, _ = signal.find_peaks(-filtered_signal)
 
     total_displacements = []
 
