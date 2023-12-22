@@ -32,7 +32,7 @@ def calculate_amplitudes(raw_data):
     differences = np.diff(raw_data, axis=1)
 
     # Calculate the Euclidean distances (amplitudes)
-    amplitudes = np.sqrt(np.sum(differences**2, axis=0))
+    amplitudes = np.sqrt(np.nansum(differences**2, axis=0))
 
     return amplitudes
 
@@ -80,7 +80,7 @@ def calculate_displacement(amplitudes, srate = 30):
     for k in range(len(filtered_peaks) - 1):
         start_peak = filtered_peaks[k]
         end_peak = filtered_peaks[k + 1]
-        displacement_sum = np.sum(np.abs(amplitudes[start_peak:end_peak]))
+        displacement_sum = np.nansum(np.abs(amplitudes[start_peak:end_peak]))
         total_displacements.append(displacement_sum)
 
     # Averaging the total displacements to get the amplitude
