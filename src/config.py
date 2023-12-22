@@ -39,6 +39,9 @@ host = getfqdn()  # Hostname of the machine running the scripts
 if user == "User":
     # Julius Workstation
     dir_proj = Path(r"D:\kiel\TremorCv_elife")
+elif user == "juliu":
+    # Julius Laptop
+    dir_proj = Path(r"C:\Users\juliu\Desktop\kiel\TremorCv_elife")
 
 
 
@@ -71,7 +74,7 @@ cfg_n_pca_components = 3  # n of PCs
 rec_colors = plt.cm.viridis(np.linspace(0, 1, 8))
 rec_colors = rec_colors[[0,4,7],:]
 prep_colors = plt.cm.magma(np.linspace(0, 1, 7))[[1,3,5],:]
-cfg_colors = {"recording_type_colors": rec_colors, 
+cfg_colors = {"recording_type_colors": rec_colors,
             "processing_type_colors": prep_colors,
             "mediapipe_color": "#ab6c82",
             "apple_color": "#f4d35e",}
@@ -79,10 +82,45 @@ cfg_colors = {"recording_type_colors": rec_colors,
 ###############################################################################
 # Set size for figure text
 cfg_ax_font = 16
-cfg_title_font = 20
-cfg_label_font = 12
-cfg_legend_font = 12
+cfg_title_font = 22
+cfg_label_font = 18
+cfg_legend_font = 16
 
 ###############################################################################
 # Set standard font to use
-cfg_font = "Times New Roman"
+cfg_font = "Open Sans"
+
+def setup_plt(plt,
+                cfg_ax_font = 16,
+                cfg_title_font = 22,
+                cfg_label_font = 16,
+                cfg_legend_font = 16,
+                cfg_font = "Open Sans"
+            ):
+    """setup_plt sets up the matplotlib figure text.
+
+    Args:
+        plt (matplotlib.pyplot): matplotlib.pyplot object
+        cfg_ax_font (int, optional): Font size for axis. Defaults to 16.
+        cfg_title_font (int, optional): Font size for title. Defaults to 20.
+        cfg_label_font (int, optional): Font size for label. Defaults to 12.
+        cfg_legend_font (int, optional): Font size for legend. Defaults to 12.
+        cfg_font (str, optional): Font to use. Defaults to "Times New Roman".
+    """
+    # setup figure text
+    # set matplotlib default font size for title
+    plt.rcParams.update({'font.size': cfg_title_font})
+    # set matplotlib default font size for label
+    plt.rcParams.update({'axes.labelsize': cfg_ax_font})
+    # set matplotlib default font size for legend
+    plt.rcParams.update({'legend.fontsize': cfg_legend_font})
+    # set matplotlib default font size for ticks
+    plt.rcParams.update({'xtick.labelsize': cfg_label_font})
+    plt.rcParams.update({'ytick.labelsize': cfg_label_font})
+    # set matplotlib default font
+    plt.rcParams.update({'font.family': cfg_font})
+    # set tight layout
+    plt.rcParams.update({'figure.autolayout': True})
+    # set box off
+    plt.rcParams.update({'axes.spines.right': False})
+    plt.rcParams.update({'axes.spines.top': False})
