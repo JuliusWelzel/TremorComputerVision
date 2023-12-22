@@ -37,9 +37,9 @@ freq_vs_amp["mocap_displacement"]=np.log(amp_table["mocap_displacement"])
 #Plot data for raw, pca, emd for MP and VI. Calculate Kendall correlation.
 fig,axes= plt.subplots(nrows=1, ncols=3, figsize=(15, 10))
 sns.regplot(x='mocap_displacement', y='mp_raw_error', data=freq_vs_amp, 
-            lowess=False, scatter=True, label="MP",color=default_blue,ax=axes[0])
+            lowess=False, scatter=True, label="MP",color=default_orange,ax=axes[0])
 sns.regplot(x='mocap_displacement', y='apple_raw_error', data=freq_vs_amp.dropna(subset=['apple_raw_error']), 
-            lowess=False, scatter=True, label="VI",color=default_orange,ax=axes[0])
+            lowess=False, scatter=True, label="VI",color=default_blue,ax=axes[0])
 
 axes[0].set_ylabel("Frequency estimation error [Hz]")
 axes[0].set_xlabel("log(OMC amplitude)")
@@ -55,9 +55,9 @@ axes[0].text(0.05,0.75,
                       transform=axes[0].transAxes)
 
 sns.regplot(x='mocap_displacement', y='mp_pca_error', data=freq_vs_amp, 
-            lowess=False, scatter=True, label="MP",color=default_blue,ax=axes[1])
+            lowess=False, scatter=True, label="MP",color=default_orange,ax=axes[1])
 sns.regplot(x='mocap_displacement', y='apple_pca_error', data=freq_vs_amp.dropna(subset=['apple_raw_error']), 
-            lowess=False, scatter=True, label="VI",color=default_orange,ax=axes[1])
+            lowess=False, scatter=True, label="VI",color=default_blue,ax=axes[1])
 axes[1].set_ylabel("Frequency estimation error [Hz]")
 axes[1].set_xlabel("log(OMC amplitude)")
 axes[1].legend(loc="upper right")
@@ -72,9 +72,9 @@ axes[1].text(0.05,0.75 ,
                      transform=axes[1].transAxes)
 
 sns.regplot(x='mocap_displacement', y='mp_emd_error', data=freq_vs_amp, 
-            lowess=False, scatter=True, label="MP",color=default_blue,ax=axes[2])
+            lowess=False, scatter=True, label="MP",color=default_orange,ax=axes[2])
 sns.regplot(x='mocap_displacement', y='apple_emd_error', data=freq_vs_amp.dropna(subset=['apple_raw_error']), 
-            lowess=False, scatter=True, label="VI",color=default_orange,ax=axes[2])
+            lowess=False, scatter=True, label="VI",color=default_blue,ax=axes[2])
 axes[2].set_ylabel("Frequency estimation error [Hz]")
 axes[2].set_xlabel("log(OMC amplitude")
 axes[2].legend(loc="upper right")
