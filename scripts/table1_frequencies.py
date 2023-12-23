@@ -53,7 +53,7 @@ for stage in stages:
             }, ignore_index=True)
 
 print(results_df_new)
-results_df_new.to_markdown(Path.joinpath(dir_figures,"table_frequencies.md"))
+results_df_new.to_markdown(Path.joinpath(dir_figures,"table_1.md"))
 
 
 ## statistics, compare along the frameworks (VI,MP) and along the Pipelines (RAW, PCA, EMD) for both OMC and IMU error
