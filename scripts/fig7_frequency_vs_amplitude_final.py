@@ -89,6 +89,6 @@ axes[2].text(0.05,0.75 ,
                       transform=axes[2].transAxes)
 
 plt.legend()
-out_path=Path.joinpath(dir_figures,"freq_vs_amp")
+out_path=Path.joinpath(dir_figures,"figure_7")
 plt.savefig(out_path,dpi=300)
 plt.show()
