@@ -39,7 +39,7 @@ angles = np.linspace(-90,90,n_angles_side)
 
 
 fig, axs = plt.subplots(figsize=(10,10))
-image = axs.imshow(np.log(displacment_per_angle), cmap='magma')
+image = axs.imshow((displacment_per_angle), cmap='magma')
 
 # Set the x-axis tick labels
 axs.set_xticks(np.arange(len(angles)))
@@ -59,12 +59,12 @@ axs.text(2, 8, '3', ha='center', va='center', color='black', fontsize=20)
 cbar = fig.colorbar(image)
 
 # Set the color bar label
-cbar.set_label('log(Mediapipe displacement)')
+cbar.set_label('Mediapipe displacement')
 # increase the font size of the axes and colorbar
 axs.tick_params(axis='both', which='major')
 
 # save figure
-plt.savefig(dir_figures.joinpath('fig1c_amp_mp_norm_angles.png'), dpi = 600)
+plt.savefig(dir_figures.joinpath('suppl_fig_3.png'), dpi = 600)
 plt.show()
 
 
@@ -92,7 +92,7 @@ angles = np.linspace(-90,90,n_angles_side)
 
 
 fig, axs = plt.subplots(figsize=(10,10))
-image = axs.imshow(np.log(displacment_per_angle), cmap='magma')
+image = axs.imshow((displacment_per_angle), cmap='magma')
 
 # Set the x-axis tick labels
 axs.set_xticks(np.arange(len(angles)))
@@ -112,12 +112,12 @@ axs.text(2, 8, '3', ha='center', va='center', color='black', fontsize=20)
 cbar = fig.colorbar(image)
 
 # Set the color bar label
-cbar.set_label('log(Mediapipe displacement)')
+cbar.set_label('Mediapipe displacement')
 # increase the font size of the axes and colorbar
 axs.tick_params(axis='both', which='major')
 
 # save figure
-plt.savefig(dir_figures.joinpath('fig1c_amp_mp_norm_z_angles.png'), dpi = 600)
+plt.savefig(dir_figures.joinpath('figure_1c.png'), dpi = 600)
 plt.show()
 
 
@@ -138,7 +138,7 @@ for i in range(n_angles_total):
 displacement_per_angle = np.reshape(displament_per_angle, (n_angles_side, n_angles_side))
 
 fig, axs = plt.subplots(figsize=(10,10))
-image = axs.imshow(displacement_per_angle, cmap='magma')
+image = axs.imshow((displacement_per_angle), cmap='magma')
 
 # Set the x-axis tick labels
 axs.set_xticks(np.arange(len(angles)))
@@ -159,10 +159,10 @@ cbar = fig.colorbar(image)
 image.set_clim(0, 70) ## set lim to avoid noise at the edges.
 
 # Set the color bar label
-cbar.set_label('log(Vision displacement)')
+cbar.set_label('Vision displacement')
 # increase the font size of the axes and colorbar
 axs.tick_params(axis='both', which='major')
 
 # save figure
-plt.savefig(dir_figures.joinpath('fig1d_amp_apple_angles.png'), dpi = 600)
+plt.savefig(dir_figures.joinpath('figure_1d.png'), dpi = 600)
 plt.show()
