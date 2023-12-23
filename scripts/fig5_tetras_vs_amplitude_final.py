@@ -76,7 +76,7 @@ axes[1, 2].text(0.05, 0.95 ,
                       transform=axes[1,2].transAxes)
 
 # Adjust layout for better visualization
-out_path=Path.joinpath(dir_figures,"tetras_vs_amplitude_estimation")
+out_path=Path.joinpath(dir_figures,"figure_5")
 fig.savefig("out_path")
 plt.tight_layout()
 plt.show()
