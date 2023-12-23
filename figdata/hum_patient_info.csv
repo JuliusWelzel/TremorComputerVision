@@ -18,4 +18,4 @@ subject_number;diagnosis;tremor_condition;Side;TETRAS;Comment
 017;PD;rest;Right;1;
 018;PD;rest;Left;3;
 019;ET;hold;Right;1;
-020;PD/ET;hold;Right;1.5;
+020;ET;hold;Right;1.5;
