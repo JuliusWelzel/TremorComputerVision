@@ -99,7 +99,7 @@ for comparison, asterisks in significant_comparisons.items():
     ax.text((x1+x2)*.5, y+h, asterisks, ha='center', va='bottom', color='k')
 
 
-fig.savefig(Path.joinpath(dir_figures, "amplitude_median_error_mm_boxplot.png"), dpi=300)
+fig.savefig(Path.joinpath(dir_figures, "figure_3.png"), dpi=300)
 plt.show()
 
 
@@ -194,7 +194,7 @@ ax2.set_ylabel("Error [% of median OMC Amplitude]")
 ax2.set_xticklabels(["MP world", "MP world (z-axis)", "MP norm", "MP norm (z-axis)", "VI"])
 
 # Saving the figure with the new manually assigned specific heights for annotations
-output_file = Path.joinpath(dir_figures,"amplitude_vs_omc_ampltides_perc.png")
+output_file = Path.joinpath(dir_figures,"figure_4.png")
 fig.tight_layout()
 fig.savefig(output_file, dpi=300)
 plt.show()
