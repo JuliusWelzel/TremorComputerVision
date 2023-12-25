@@ -32,7 +32,7 @@ def calculate_amplitudes(raw_data):
     differences = np.diff(raw_data, axis=1)
 
     # Calculate the Euclidean distances (amplitudes)
-    amplitudes = np.sqrt(np.sum(differences**2, axis=0))
+    amplitudes = np.sqrt(np.nansum(differences**2, axis=0))
 
     return amplitudes
 
@@ -105,3 +105,164 @@ def mp_hand_labels():
     labels = [str(h) + d for h in handMarks for d in dims]
     mp_labels = list(labels)
     return mp_labels
+
+
+def find_handlandmarks(mp_class, tmp_image):
+    """
+    This functions finds the coordinates of all hand landmarks in a single image/frame
+    """
+
+    # prelocate vars
+    tmp_pos_norm = np.zeros([len(mp_class.cfg_mp_labels), 2])
+    tmp_pos_norm[:] = np.nan
+    tmp_pos_world = np.zeros([len(mp_class.cfg_mp_labels), 2])
+    tmp_pos_world[:] = np.nan
+    tmp_acc = np.zeros([1, 2])
+    label_hand = ["", ""]
+    tmp_pos_norm_mp = []
+    tmp_pos_world_mp = []
+
+    # prep image via cv and process via MP (self.hands)
+    tmp_image.flags.writeable = False
+    tmp_image = cv2.cvtColor(tmp_image, cv2.COLOR_BGR2RGB)
+    results = mp_class.hands.process(tmp_image)
+
+    if results.multi_hand_landmarks is not None:
+
+        for ih, (hand_norm, hand_world) in enumerate(
+            zip(results.multi_hand_landmarks, results.multi_hand_world_landmarks)
+        ):  # results.multi_hand_landmarks returns normalised landMarks for all the hands
+
+            # get hand classification label
+            label_hand[ih] = results.multi_handedness[ih].classification[0].label
+            tmp_pos_norm_mp = []
+            tmp_pos_world_mp = []
+
+            for landmark_norm, landmark_world in zip(
+                hand_norm.landmark, hand_world.landmark
+            ):
+                # landMark holds x,y,z ratios of single landmark
+                x_norm, y_norm, z_norm = (
+                    landmark_norm.x,
+                    landmark_norm.y,
+                    landmark_norm.z,
+                )
+                tmp_pos_norm_mp.append([x_norm, y_norm, z_norm])
+                x_world, y_world, z_world = (
+                    landmark_world.x,
+                    landmark_world.y,
+                    landmark_world.z,
+                )
+                tmp_pos_world_mp.append([x_world, y_world, z_world])
+                tmp_acc[:, ih] = results.multi_handedness[ih].classification[0].score
+
+            tmp_pos_norm[:, ih] = np.asarray(tmp_pos_norm_mp).flatten()
+            tmp_pos_world[:, ih] = np.asarray(tmp_pos_world_mp).flatten()
+
+    landmark_position_norm = tmp_pos_norm
+    landmark_position_world = tmp_pos_world
+    hand_accuracy = tmp_acc
+
+    return landmark_position_norm, landmark_position_world, hand_accuracy, label_hand
+
+
+def pcs2spec(cfg_n_components, cfg_freqs_oi, specs, freqs):
+    """This function takes a number of principal components and weights them
+    to get a spectrum for a frequency window of interest.
+
+    Args:
+        cfg_n_components (int): Number of PCs to take into account for spectral analysis.
+        cfg_freqs_oi (list of str): Frequency window in which a PC spectrum should have a peak.
+        specs (ndarray): Array of type float.
+        freqs (ndarray): Array of type float.
+
+    Returns:
+        ndarray: Array of type float.
+    """
+    peaks_freq_raw = []
+    for i in range(cfg_n_components):
+        peak, props = signal.find_peaks(specs[:, i], height=np.max(specs[:, i]) * 0.1)
+        if not props["peak_heights"].any():
+            continue
+        idx_max = np.argmax(props["peak_heights"])
+        peaks_freq_raw.append(freqs[peak][idx_max])
+
+    peaks_freq_raw = np.array(peaks_freq_raw)
+    idx_freqs_oi = np.where(
+        np.logical_and(peaks_freq_raw >= cfg_freqs_oi[0], peaks_freq_raw <= cfg_freqs_oi[1])
+    )
+    idx_pcs_oi = idx_freqs_oi[0][:cfg_n_components]
+    specs_oi = specs[:, idx_pcs_oi]
+
+
+    if specs_oi.any():
+        idx_peak_oi = np.argmax(specs_oi.max(axis=0))
+        peaks_amp_raw_oi = np.max(specs_oi.max(axis=0))
+        peaks_freq_raw_oi = peaks_freq_raw[idx_peak_oi]
+        specs_oi = specs_oi[:,idx_peak_oi]
+    else:
+        peaks_amp_raw_oi = np.nan
+        peaks_freq_raw_oi = np.nan
+
+    return specs_oi, peaks_freq_raw_oi, peaks_amp_raw_oi
+
+
+def butter_bandpass(lowcut, highcut, fs, order=5):
+    """
+    Design a Butterworth bandpass filter.
+
+    Parameters
+    ----------
+    lowcut : float
+        The low cut-off frequency in Hz.
+    highcut : float
+        The high cut-off frequency in Hz.
+    fs : int
+        The sampling rate in Hz.
+    order : int, optional
+        The order of the filter. The default is 5.
+
+    Returns
+    -------
+    b : array_like
+        The numerator of the filter.
+    a : array_like
+        The denominator of the filter.
+
+    """
+
+    nyq = 0.5 * fs
+    low = lowcut / nyq
+    high = highcut / nyq
+    b, a = signal.butter(order, [low, high], btype="bandpass", analog=False)
+    return b, a
+
+def butter_bandpass_filter(data, lowcut, highcut, fs, order=5, axis = 0):
+    """
+    Apply a Butterworth bandpass filter to a signal.
+
+    Parameters
+    ----------
+    data : array_like
+        The signal to be filtered.
+    lowcut : float
+        The low cut-off frequency in Hz.
+    highcut : float
+        The high cut-off frequency in Hz.
+    fs : int
+        The sampling rate in Hz.
+    order : int, optional
+        The order of the filter. The default is 5.
+    axis : int, optional
+        The axis along which to filter. The default is 0.
+
+    Returns
+    -------
+    y : array_like
+        The filtered signal.
+
+    """
+
+    b, a = butter_bandpass(lowcut, highcut, fs, order=order)
+    y = signal.filtfilt(b, a, data, axis = axis)
+    return y

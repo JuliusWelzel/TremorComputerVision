@@ -88,14 +88,14 @@ cfg_legend_font = 16
 
 ###############################################################################
 # Set standard font to use
-cfg_font = "Open Sans"
+#cfg_font = "Open Sans"
 
 def setup_plt(plt,
                 cfg_ax_font = 16,
                 cfg_title_font = 22,
                 cfg_label_font = 16,
                 cfg_legend_font = 16,
-                cfg_font = "Open Sans"
+                #cfg_font = "Open Sans"
             ):
     """setup_plt sets up the matplotlib figure text.
 
@@ -118,7 +118,7 @@ def setup_plt(plt,
     plt.rcParams.update({'xtick.labelsize': cfg_label_font})
     plt.rcParams.update({'ytick.labelsize': cfg_label_font})
     # set matplotlib default font
-    plt.rcParams.update({'font.family': cfg_font})
+    #plt.rcParams.update({'font.family': cfg_font})
     # set tight layout
     plt.rcParams.update({'figure.autolayout': True})
     # set box off

@@ -107,7 +107,7 @@ axs.text(3, 8, '3', ha='center', va='center', color='black', fontsize=20)
 cbar = fig.colorbar(image)
 
 # Set the color bar label
-cbar.set_label('Mediapipe displacement')
+cbar.set_label('Apple Vision displacement')
 # increase the font size of the axes and colorbar
 axs.tick_params(axis='both', which='major')
 
