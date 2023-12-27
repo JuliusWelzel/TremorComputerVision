@@ -17,7 +17,7 @@ mp_obj.process_video(r"..\figdata\amp_lin_increase_30s.avi")
 mp_obj.find_roi()
 freqs, specs, _ = mp_obj.frequency_estimations(to_plot=False)
 
-ground_truth_amp = pd.read_csv(dir_figdata.joinpath("amp_lin_ground_truth.csv"), header=None)
+ground_truth_amp = pd.read_csv(dir_figdata.joinpath("sim_amp_lin_ground_truth.csv"), header=None)
 ground_truth_amp.columns = ["frame", "amplitude"]
 ground_truth_amp["times"] = ground_truth_amp["frame"] / 30
 

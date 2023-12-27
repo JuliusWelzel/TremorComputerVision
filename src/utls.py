@@ -6,6 +6,7 @@ from scipy.stats import kendalltau
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import cv2
 
 from src.config import cfg_bandpass_fmin, cfg_bandpass_fmax
 
