@@ -4,8 +4,7 @@ import pandas as pd
 from scipy.stats import zscore
 from scipy import signal
 
-from src.config import (dir_figdata, dir_figures,
-                        cfg_frequency_win_oi_min, cfg_frequency_win_oi_max)
+from src.config import (dir_figdata, dir_figures)
 from src.MpHandAnalyst import MpHandAnalyst
 from src.utls import calculate_amplitudes, calculate_displacement
 
@@ -15,7 +14,6 @@ from src.utls import calculate_amplitudes, calculate_displacement
 mp_obj = MpHandAnalyst()
 mp_obj.process_video(r"..\figdata\amp_lin_increase_30s.avi")
 mp_obj.find_roi()
-freqs, specs, _ = mp_obj.frequency_estimations(to_plot=False)
 
 ground_truth_amp = pd.read_csv(dir_figdata.joinpath("sim_amp_lin_ground_truth.csv"), header=None)
 ground_truth_amp.columns = ["frame", "amplitude"]
@@ -124,7 +122,7 @@ fw, tw, Sxxw = signal.spectrogram(mp_world_amp_sum, srate, nperseg=2 * srate, no
 fn, tn, Sxxn = signal.spectrogram(mp_norm_amp_sum, srate, nperseg=2 * srate, noverlap=srate)
 fz, tz, Sxxz = signal.spectrogram(mp_norm_amp_sum_z, srate, nperseg=2 * srate, noverlap=srate)
 
-from matplotlib import colors
+# plot the frequency over time
 fig, ax = plt.subplots(3,1,figsize=(20, 10), sharex=True)
 
 ax[0].pcolormesh(tw, fw, Sxxw,)

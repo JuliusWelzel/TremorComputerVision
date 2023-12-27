@@ -1,15 +1,14 @@
-from src.config import (cfg_ax_font, cfg_label_font, cfg_title_font, cfg_legend_font) # import font size
-from src.config import (cfg_colors) # import colors
-from src.config import (dir_figdata, dir_figures) # import figure directories
+from src.config import (dir_figdata, dir_figures, setup_plt) # import figure directories
 
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-import scipy.stats as stats
 from pathlib import Path
 import numpy as np
 from scipy.stats import kruskal
 import scikit_posthocs as sp
+
+setup_plt(plt)
 
 amp_data=pd.read_csv(Path.joinpath(dir_figdata,"displacements.csv"))
 
@@ -77,7 +76,7 @@ manual_heights_dict_new = dict(zip(significant_comparisons.keys(), manual_height
 
 #list of used methods, usefu for plotting later.
 methods = ["error_mp_world_displacement", "error_mp_world_z_displacement",
-           "error_mp_norm_displacement", "error_mp_norm_displacement_z", 
+           "error_mp_norm_displacement", "error_mp_norm_displacement_z",
            "error_apple_displacement"]
 
 # Boxplot of the estimation error relative to OMC in mm
@@ -138,37 +137,37 @@ else:
     print("No significant differences were found in the Kruskal-Wallis test.")
 
 ### No significant differences found between the medians of the groups by analysing the relative error.
-    
+
 
 # Create a figure with three subplots
 fig, (ax3, ax1, ax2) = plt.subplots(3, 1, figsize=(10, 20))
 
 colorblind = sns.color_palette("colorblind", 5)
 # plot relative error to OMC in % of OMC amplitude vs the OMC amplitude to check for systematic errors.
-sns.regplot(x='mocap_displacement', y='error_mp_world_displacement', data=amp_data.dropna(subset=['perc_error_mp_world_displacement']), 
+sns.regplot(x='mocap_displacement', y='error_mp_world_displacement', data=amp_data.dropna(subset=['perc_error_mp_world_displacement']),
             lowess=True, scatter=True, ci=95, label="MP world",color= colorblind[0],ax=ax3)
-sns.regplot(x='mocap_displacement', y='error_mp_world_z_displacement', data=amp_data.dropna(subset=['perc_error_mp_world_z_displacement']), 
+sns.regplot(x='mocap_displacement', y='error_mp_world_z_displacement', data=amp_data.dropna(subset=['perc_error_mp_world_z_displacement']),
             lowess=True, scatter=True, ci=95, label="MP world (z-axis)",color= colorblind[1],ax=ax3)
-sns.regplot(x='mocap_displacement', y='error_mp_norm_displacement', data=amp_data.dropna(subset=['perc_error_mp_norm_displacement']), 
+sns.regplot(x='mocap_displacement', y='error_mp_norm_displacement', data=amp_data.dropna(subset=['perc_error_mp_norm_displacement']),
             lowess=True, scatter=True, ci=95, label="MP norm",color= colorblind[2],ax=ax3)
-sns.regplot(x='mocap_displacement', y='error_mp_norm_displacement_z', data=amp_data.dropna(subset=['perc_error_mp_norm_displacement_z']), 
+sns.regplot(x='mocap_displacement', y='error_mp_norm_displacement_z', data=amp_data.dropna(subset=['perc_error_mp_norm_displacement_z']),
             lowess=True, scatter=True, ci=95, label="MP norm (z-axis)",color= colorblind[3],ax=ax3)
-sns.regplot(x='mocap_displacement', y='error_apple_displacement', data=amp_data.dropna(subset=['perc_error_apple_displacement']), 
+sns.regplot(x='mocap_displacement', y='error_apple_displacement', data=amp_data.dropna(subset=['perc_error_apple_displacement']),
             lowess=True, scatter=True, ci=95, label="VI",color= colorblind[4],ax=ax3)
 ax3.legend()
 ax3.set_ylabel("Error [mm]")
 ax3.set_xlabel("OMC amplitude [mm]")
 
 # plot relative error to OMC in % of OMC amplitude vs the OMC amplitude to check for systematic errors.
-sns.regplot(x='mocap_displacement', y='perc_error_mp_world_displacement', data=amp_data.dropna(subset=['perc_error_mp_world_displacement']), 
+sns.regplot(x='mocap_displacement', y='perc_error_mp_world_displacement', data=amp_data.dropna(subset=['perc_error_mp_world_displacement']),
             lowess=True, scatter=True, ci=95, label="MP world",color= colorblind[0],ax=ax1)
-sns.regplot(x='mocap_displacement', y='perc_error_mp_world_z_displacement', data=amp_data.dropna(subset=['perc_error_mp_world_z_displacement']), 
+sns.regplot(x='mocap_displacement', y='perc_error_mp_world_z_displacement', data=amp_data.dropna(subset=['perc_error_mp_world_z_displacement']),
             lowess=True, scatter=True, ci=95, label="MP world (z-axis)",color= colorblind[1],ax=ax1)
-sns.regplot(x='mocap_displacement', y='perc_error_mp_norm_displacement', data=amp_data.dropna(subset=['perc_error_mp_norm_displacement']), 
+sns.regplot(x='mocap_displacement', y='perc_error_mp_norm_displacement', data=amp_data.dropna(subset=['perc_error_mp_norm_displacement']),
             lowess=True, scatter=True, ci=95, label="MP norm",color= colorblind[2],ax=ax1)
-sns.regplot(x='mocap_displacement', y='perc_error_mp_norm_displacement_z', data=amp_data.dropna(subset=['perc_error_mp_norm_displacement_z']), 
+sns.regplot(x='mocap_displacement', y='perc_error_mp_norm_displacement_z', data=amp_data.dropna(subset=['perc_error_mp_norm_displacement_z']),
             lowess=True, scatter=True, ci=95, label= "MP norm (z-axis)",color= colorblind[3],ax=ax1)
-sns.regplot(x='mocap_displacement', y='perc_error_apple_displacement', data=amp_data.dropna(subset=['perc_error_apple_displacement']), 
+sns.regplot(x='mocap_displacement', y='perc_error_apple_displacement', data=amp_data.dropna(subset=['perc_error_apple_displacement']),
             lowess=True, scatter=True, ci=95, label="VI",color= colorblind[4],ax=ax1)
 
 # Correcting the labeling part
@@ -178,10 +177,10 @@ ax1.legend()
 #ax1.set_xscale('log')
 
 sns.boxplot(data=amp_data[["perc_error_mp_world_displacement", "perc_error_mp_world_z_displacement",
-                             "perc_error_mp_norm_displacement", "perc_error_mp_norm_displacement_z", 
+                             "perc_error_mp_norm_displacement", "perc_error_mp_norm_displacement_z",
                              "perc_error_apple_displacement"]], ax=ax2, palette='colorblind', fliersize=0)
 sns.stripplot(data=amp_data[["perc_error_mp_world_displacement", "perc_error_mp_world_z_displacement",
-                               "perc_error_mp_norm_displacement", "perc_error_mp_norm_displacement_z", 
+                               "perc_error_mp_norm_displacement", "perc_error_mp_norm_displacement_z",
                                "perc_error_apple_displacement"]], ax=ax2, color="grey", alpha=.5, size=10)
 
 

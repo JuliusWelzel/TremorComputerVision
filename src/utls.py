@@ -1,15 +1,9 @@
 import numpy as np
 from scipy import signal
-from scipy.signal import find_peaks, peak_widths, peak_prominences
-from scipy.stats import zscore
-from scipy.stats import kendalltau
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 import cv2
 
 from src.config import cfg_bandpass_fmin, cfg_bandpass_fmax
-
 
 
 def calculate_amplitudes(raw_data):

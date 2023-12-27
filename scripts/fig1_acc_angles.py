@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 from astropy.convolution import convolve
 from astropy.convolution import Gaussian2DKernel
-import pandas as pd
 
 # define paths
 from src.config import (dir_figdata, dir_figures, setup_plt)
@@ -14,7 +13,6 @@ setup_plt(plt)
 n_angles_side = 13
 n_angles_total = 13 * 13
 n_frames_per_angle = 180
-n_chs_mp = 63
 
 # process the angle data
 acc_z = np.load(Path.joinpath(dir_figdata,'sim_acc_angles_blender.npy'))

@@ -4,7 +4,7 @@ import numpy as np
 from tqdm import tqdm
 from os.path import exists
 import math
-from scipy import stats, signal
+from scipy import signal
 from sklearn.decomposition import PCA
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -69,7 +69,7 @@ class MpHandAnalyst:
         if not exists(path_to_video):
             print("File does not exists")
             return
-        
+
         if not isinstance(path_to_video,str):
             path_to_video = str(path_to_video)
 
@@ -127,7 +127,7 @@ class MpHandAnalyst:
         if label_method != 'MP' and label_method != 'SIDE':
             print("Specifiy hand label method either 'MP' or 'SIDE'")
             return
-        
+
         if not all(
             hand_lbs == self.mp_hand_labels[0] for hand_lbs in self.mp_hand_labels
         ):
@@ -226,7 +226,7 @@ class MpHandAnalyst:
         if label_method == 'SIDE' and single_hand:
             self.mp_hand_labels = np.repeat([self.mp_main_hand_label],self.cfg_vid_nframes,axis=0)
             print('All hand labels are forced to be main hand label')
-            
+
         if label_method == 'SIDE' and not single_hand:
             if np.nanmedian(self.mp_positions_norm[:,0,0]) < np.nanmedian(self.mp_positions_norm[:,0,1]):
                 self.mp_hand_labels = [['Left','Right']] * self.cfg_vid_nframes
@@ -235,7 +235,7 @@ class MpHandAnalyst:
             print('All hand labels are forced to be main hand labels')
 
 
-            
+
     def show_video(self, path_to_video, write_video=False):
         """ This function displays a video.
 
@@ -278,7 +278,7 @@ class MpHandAnalyst:
                 # Draw the hand annotations on the image.
                 image.flags.writeable = True
                 image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-                
+
                 if results.multi_hand_landmarks:
                     for hand_landmarks in results.multi_hand_landmarks:
                         mp_drawing.draw_landmarks(
@@ -427,7 +427,7 @@ class MpHandAnalyst:
                 )
             )
 
-        # initialize PCA 
+        # initialize PCA
         pca = PCA(n_components = cfg_n_components)
         pcs = np.empty((len(raw_interp), cfg_n_components, self.cfg_mp_max_n_hands))
 
@@ -442,13 +442,13 @@ class MpHandAnalyst:
 
         # filter each component
         freqs_pca_h0, specs_pca_h0 = signal.welch(
-            pcs[:, :, 0], 
-            nperseg = 5 * self.cfg_vid_fps, 
-            fs = self.cfg_vid_fps, 
+            pcs[:, :, 0],
+            nperseg = 5 * self.cfg_vid_fps,
+            fs = self.cfg_vid_fps,
             detrend='linear',
             scaling="spectrum",
             axis=0
-        )  
+        )
 
         # filter and pca second hand
         if self.cfg_mp_n_hands == 2:
@@ -457,15 +457,15 @@ class MpHandAnalyst:
             )
             pcs[:, :, 1] = pca.fit_transform(filt_z[:, :, 1])
             freqs_pca_h1, specs_pca_h1 = signal.welch(
-                pcs[:, :, 1], 
-                nperseg = 5 * self.cfg_vid_fps, 
-                fs = self.cfg_vid_fps, 
+                pcs[:, :, 1],
+                nperseg = 5 * self.cfg_vid_fps,
+                fs = self.cfg_vid_fps,
                 detrend='linear',
                 scaling="spectrum",
                 axis=0
-            )  
+            )
 
-            
+
         # colors
         ccs_raw = plt.cm.viridis(np.linspace(0.2, 0.9, raw_interp.shape[1]))
         ccs_pca = plt.cm.viridis(np.linspace(0.2, 0.9, cfg_n_components))
@@ -476,7 +476,7 @@ class MpHandAnalyst:
         )
 
         pc_spec_h0, peaks, eigen_ratio = pcs2spec(cfg_n_components=cfg_n_components, cfg_freqs_oi=freqs_oi, specs=specs_pca_h0, freqs=freqs_pca_h0)
-        
+
         if self.cfg_mp_n_hands == 2:
             pc_spec_h1, peaks, eigen_ratio = pcs2spec(cfg_n_components=cfg_n_components, cfg_freqs_oi=freqs_oi, specs=specs_pca_h1, freqs=freqs_pca_h1)
 
@@ -551,7 +551,7 @@ class MpHandAnalyst:
             plt.plot(
                 freqs_pca_h0, pc_spec_h0, color=ccs_pca[0, :], label="PCA"
             )
-            
+
 
             plt.vlines(
                 freqs_pca_h0[np.argmax(pc_spec_h0)],
@@ -597,9 +597,9 @@ class MpHandAnalyst:
                 self.mp_hand_labels[k][1]='Left'    #the labels are reset, accordingly.
                 self.mp_hand_labels[k][0]='Right'   #the labels are reset, accordingly.
 
-            if self.mp_hand_labels[k][0]=='Right':   #the right hand will be stored in the first axis, the left in the second axis of the array with shape 
+            if self.mp_hand_labels[k][0]=='Right':   #the right hand will be stored in the first axis, the left in the second axis of the array with shape
                                                      # [framelenght,x/y/z of 21 points, righthand/lefthand] [i,63,2]
-                self.mp_positions_norm[k,:,0]=self.mp_positions_norm[k,:,0] 
+                self.mp_positions_norm[k,:,0]=self.mp_positions_norm[k,:,0]
                 self.mp_positions_norm[k,:,1]=self.mp_positions_norm[k,:,1]
             else:
                 self.mp_positions_norm[k,:,1]=self.mp_positions_norm[k,:,0]
@@ -612,7 +612,7 @@ class MpHandAnalyst:
         hand0_point12 = np.array(self.mp_positions_norm[:,(12*3):((12*3))+3,0])
         hand1_point12 = np.array(self.mp_positions_norm[:,(12*3):((12*3))+3,1] )
 
-        hand_length0 = np.median(np.linalg.norm(hand0_point0-hand0_point12,axis=1)) #calculate distance between point 9 and 12 fpr each 
+        hand_length0 = np.median(np.linalg.norm(hand0_point0-hand0_point12,axis=1)) #calculate distance between point 9 and 12 fpr each
                                                                         #hand  in 3d space over time and take the median (more robust to outliers.)
 
         hand_length1 = np.median(np.linalg.norm(hand1_point0-hand1_point12,axis=1 ) )
