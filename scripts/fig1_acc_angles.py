@@ -1,17 +1,18 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 from pathlib import Path
 from astropy.convolution import convolve
 from astropy.convolution import Gaussian2DKernel
 
 # define paths
-from src.config import (dir_figdata, dir_figures, setup_plt)
+from src.config import (dir_figdata, dir_figures, set_style)
 
-setup_plt(plt)
+set_style()
 
 #set blender configurations
 n_angles_side = 13
-n_angles_total = 13 * 13
+n_angles_total = n_angles_side * 13
 n_frames_per_angle = 180
 
 # process the angle data
@@ -42,9 +43,9 @@ axs.set_ylabel('Camera angle y-axis [°]')
 axs.set_xlabel('Camera angle x-axis [°]')
 
 # add labels 1,2,3 to the plots at (-40,-45), (0,0), (30,-60)
-axs.text(2, 4, '1', ha='center', va='center', color='black', fontsize=20)
-axs.text(6, 6, '2', ha='center', va='center', color='black', fontsize=20)
-axs.text(3, 8, '3', ha='center', va='center', color='black', fontsize=20)
+axs.text(2, 4, '1', ha='center', va='center', color='black')
+axs.text(6, 6, '2', ha='center', va='center', color='black')
+axs.text(3, 8, '3', ha='center', va='center', color='black')
 
 # Add color bar
 cbar = fig.colorbar(image)
@@ -55,7 +56,7 @@ cbar.set_label('Mediapipe accuracy')
 axs.tick_params(axis='both', which='major')
 
 # save figure
-plt.savefig(dir_figures.joinpath('fig1a_acc_mp_angles.png'), dpi = 600)
+plt.savefig(dir_figures.joinpath('fig1a_acc_mp_angles.png'))
 
 
 
@@ -88,9 +89,9 @@ axs.set_ylabel('Camera angle y-axis [°]')
 axs.set_xlabel('Camera angle x-axis [°]')
 
 # add labels 1,2,3 to the plots at (-40,-45), (0,0), (30,-60)
-axs.text(2, 4, '1', ha='center', va='center', color='black', fontsize=20)
-axs.text(6, 6, '2', ha='center', va='center', color='white', fontsize=20)
-axs.text(3, 8, '3', ha='center', va='center', color='white', fontsize=20)
+axs.text(2, 4, '1', ha='center', va='center', color='black')
+axs.text(6, 6, '2', ha='center', va='center', color='white')
+axs.text(3, 8, '3', ha='center', va='center', color='white')
 
 # Add color bar
 cbar = fig.colorbar(image)
@@ -102,4 +103,4 @@ cbar.set_label('Apple CV accuracy')
 axs.tick_params(axis='both', which='major')
 
 # save figure
-plt.savefig(dir_figures.joinpath('fig1b_acc_apple_angles.png'), dpi = 600)
+plt.savefig(dir_figures.joinpath('fig1b_acc_apple_angles.png'))

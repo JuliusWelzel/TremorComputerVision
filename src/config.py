@@ -7,9 +7,11 @@ Configuration parameters for the study.
 """
 
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 import numpy as np
 import os
 from socket import getfqdn
+import seaborn as sns
 from pathlib import Path
 
 
@@ -71,11 +73,12 @@ cfg_n_pca_components = 3  # n of PCs
 
 ###############################################################################
 # These are all the relevant colors settings for the analysis
+cv_models = {'MPnorm': '#006685', 'MPnorm_z': '#3FA5C4', 'MPworld': '#BF003F', 'MPworld_z': '#E84653', 'Apple_VI': '#FFE48D'}
+cv_models_dict = {f"cv_model_{i+1}": color for i, color in enumerate(cv_models)}
 rec_colors = plt.cm.viridis(np.linspace(0, 1, 8))
 rec_colors = rec_colors[[0,4,7],:]
-prep_colors = plt.cm.magma(np.linspace(0, 1, 7))[[1,3,5],:]
 cfg_colors = {"recording_type_colors": rec_colors,
-            "processing_type_colors": prep_colors,
+            "cv_model_colors": cv_models,
             "mediapipe_color": "#ab6c82",
             "apple_color": "#f4d35e",}
 
@@ -90,37 +93,18 @@ cfg_legend_font = 16
 # Set standard font to use
 #cfg_font = "Open Sans"
 
-def setup_plt(plt,
-                cfg_ax_font = 16,
-                cfg_title_font = 22,
-                cfg_label_font = 16,
-                cfg_legend_font = 16,
-                #cfg_font = "Open Sans"
-            ):
-    """setup_plt sets up the matplotlib figure text.
-
-    Args:
-        plt (matplotlib.pyplot): matplotlib.pyplot object
-        cfg_ax_font (int, optional): Font size for axis. Defaults to 16.
-        cfg_title_font (int, optional): Font size for title. Defaults to 20.
-        cfg_label_font (int, optional): Font size for label. Defaults to 12.
-        cfg_legend_font (int, optional): Font size for legend. Defaults to 12.
-        cfg_font (str, optional): Font to use. Defaults to "Times New Roman".
+def set_style(font_size: int = 24):
     """
-    # setup figure text
-    # set matplotlib default font size for title
-    plt.rcParams.update({'font.size': cfg_title_font})
-    # set matplotlib default font size for label
-    plt.rcParams.update({'axes.labelsize': cfg_ax_font})
-    # set matplotlib default font size for legend
-    plt.rcParams.update({'legend.fontsize': cfg_legend_font})
-    # set matplotlib default font size for ticks
-    plt.rcParams.update({'xtick.labelsize': cfg_label_font})
-    plt.rcParams.update({'ytick.labelsize': cfg_label_font})
-    # set matplotlib default font
-    #plt.rcParams.update({'font.family': cfg_font})
-    # set tight layout
-    plt.rcParams.update({'figure.autolayout': True})
-    # set box off
-    plt.rcParams.update({'axes.spines.right': False})
-    plt.rcParams.update({'axes.spines.top': False})
+    Just some basic things I do before plotting.
+    """
+    mpl.rcParams['font.family'] = 'sans-serif'
+    mpl.rcParams['font.sans-serif'] = 'Open Sans Condensed'
+    mpl.rcParams['font.size'] = font_size
+    mpl.rcParams.update({'font.size': cfg_title_font})
+    mpl.rcParams.update({'axes.labelsize': cfg_ax_font})
+    mpl.rcParams.update({'legend.fontsize': cfg_legend_font})
+    mpl.rcParams.update({'xtick.labelsize': cfg_label_font})
+    mpl.rcParams.update({'ytick.labelsize': cfg_label_font})
+    mpl.rcParams.update({'figure.autolayout': True})
+    mpl.rcParams.update({'axes.spines.right': False})
+    mpl.rcParams.update({'axes.spines.top': False})

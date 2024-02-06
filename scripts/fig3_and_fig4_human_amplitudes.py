@@ -1,4 +1,4 @@
-from src.config import (dir_figdata, dir_figures, setup_plt) # import figure directories
+from src.config import (dir_figdata, dir_figures, set_style) # import figure directories
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -8,7 +8,7 @@ import numpy as np
 from scipy.stats import kruskal
 import scikit_posthocs as sp
 
-setup_plt(plt)
+set_style()
 
 amp_data=pd.read_csv(Path.joinpath(dir_figdata,"displacements.csv"))
 

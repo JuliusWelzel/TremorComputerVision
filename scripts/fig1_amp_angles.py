@@ -3,10 +3,10 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 import pandas as pd
 # define paths
-from src.config import (dir_figdata, dir_figures, setup_plt)
+from src.config import (dir_figdata, dir_figures, set_style)
 from src.utls import calculate_amplitudes, calculate_displacement, mp_hand_labels
 
-setup_plt(plt)
+set_style()
 
 #set blender configurations
 n_angles_side = 13
