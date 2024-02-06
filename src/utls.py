@@ -32,6 +32,8 @@ def calculate_amplitudes(raw_data):
     return amplitudes
 
 
+
+
 def calculate_displacement(amplitudes, srate = 30):
     """
     Calculates the displacement of the hand over time by integrating the
@@ -83,6 +85,57 @@ def calculate_displacement(amplitudes, srate = 30):
 
     return average_total_displacement
 
+
+def calculate_displacement_over_time(amplitudes, srate = 30):
+    """
+    Calculates the displacement of the hand over time by integrating the
+    velocity over time. The velocity is calculated by taking the derivative
+    of the amplitude signal.
+
+    Parameters
+    ----------
+    amplitudes : array_like
+        The amplitude signal of the hand over time.
+    srate : int
+        The sampling rate of the amplitude signal.
+
+    Returns
+    -------
+    displacements : array_like
+        The displacement of the hand over time.
+
+    """
+
+    # Bandpass filter design parameters
+    lowcut = cfg_bandpass_fmin  # low frequency cut-off in Hz
+    highcut = cfg_bandpass_fmax  # high frequency cut-off in Hz
+
+    # Normalizing the frequencies by the Nyquist frequency (half the sampling rate)
+    nyq = 0.5 * srate
+    low = lowcut / nyq
+    high = highcut / nyq
+
+    # Creating the Butterworth bandpass filter
+    b, a = signal.butter(N=2, Wn=[low, high], btype='band')
+
+    # Applying the filter to the signal
+    filtered_signal = signal.filtfilt(b, a, np.array(amplitudes))
+
+    # Performing peak detection on the filtered signal
+    filtered_peaks, _ = signal.find_peaks(-filtered_signal)
+
+    total_displacements = []
+
+    for k in range(len(filtered_peaks) - 1):
+        start_peak = filtered_peaks[k]
+        end_peak = filtered_peaks[k + 1]
+        displacement_sum = np.nansum(np.abs(amplitudes[start_peak:end_peak]))
+        total_displacements.append(displacement_sum)
+
+    # Averaging the total displacements to get the amplitude
+    average_total_displacement = total_displacements
+
+    return average_total_displacement,filtered_peaks
 
 def mp_hand_labels():
     """
