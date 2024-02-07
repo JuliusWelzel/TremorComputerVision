@@ -1,8 +1,11 @@
 import pandas as pd
 from pathlib import Path
-from src.config import (cfg_ax_font, cfg_label_font, cfg_title_font, cfg_legend_font) # import font size
+from src.config import (set_style) # import font size
 from src.config import (cfg_colors) # import colors
-from src.config import (dir_figdata, dir_figures) # import figure directories
+from src.config import (dir_figdata, dir_figures, dir_tables) # import figure directories
+
+# set plotting configs
+set_style()
 
 #1 read data
 data=pd.read_csv(Path.joinpath(dir_figdata,"hum_patient_info.csv"),delimiter=";")
@@ -31,4 +34,4 @@ summary_table = pd.DataFrame({
 })
 
 # Displaying the summary table
-summary_table.to_markdown(Path.joinpath(dir_figures,"table_2.md"),index=False)
+summary_table.to_markdown(dir_tables.joinpath("table_2.md"),index=False)

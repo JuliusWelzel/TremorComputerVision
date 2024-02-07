@@ -314,3 +314,41 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order=5, axis = 0):
     b, a = butter_bandpass(lowcut, highcut, fs, order=order)
     y = signal.filtfilt(b, a, data, axis = axis)
     return y
+
+
+def plot_normalized_spectrogram(signal_data, srate, ax, title, freq_range=None, num_segments=16):
+    """
+    Plots a normalized spectrogram on the given axes.
+
+    :param signal_data: Array of signal data.
+    :param srate: Sampling rate of the signal.
+    :param ax: Matplotlib axes to plot on.
+    :param title: Title for the subplot.
+    :param freq_range: Tuple (min_freq, max_freq) to set y-axis limits.
+    :param num_segments: Number of segments to normalize across.
+    """
+    # Compute the spectrogram
+    f, t, Sxx = signal.spectrogram(signal_data, srate, nperseg=1 * srate)
+
+    # Check if the spectrogram is large enough to be segmented
+    if Sxx.shape[1] < num_segments:
+        print(f"Warning: Not enough data points to divide into {num_segments} segments. Reducing number of segments.")
+        num_segments = Sxx.shape[1]
+
+    segment_length = Sxx.shape[1] // num_segments
+    Sxx_normalized = np.zeros_like(Sxx)
+
+    for i in range(num_segments):
+        start = i * segment_length
+        end = start + segment_length
+        if np.any(Sxx[:, start:end]):  # Check if the segment is not empty
+            segment_max = np.max(Sxx[:, start:end])
+            segment_min = np.min(Sxx[:, start:end])
+            Sxx_normalized[:, start:end] = (Sxx[:, start:end] - segment_min) / (segment_max - segment_min)
+
+    # Plotting
+    ax.pcolormesh(t, f, Sxx_normalized,cmap="viridis")
+    ax.set_ylabel('Frequency [Hz]')
+    ax.set_title(title)
+    if freq_range:
+        ax.set_ylim(freq_range)

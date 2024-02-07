@@ -54,6 +54,7 @@ elif user == "juliu":
 dir_sourcedata = Path.joinpath(dir_proj, "source")
 dir_figdata = define_dir(dir_proj, "figdata")
 dir_figures = define_dir(dir_proj, "figures")
+dir_tables = define_dir(dir_proj, "tables")
 
 ###############################################################################
 # These are all the relevant parameters for the analysis. You can experiment
@@ -77,8 +78,11 @@ cv_models = {'MPnorm': '#006685', 'MPnorm_z': '#3FA5C4', 'MPworld': '#BF003F', '
 cv_models_dict = {f"cv_model_{i+1}": color for i, color in enumerate(cv_models)}
 rec_colors = plt.cm.viridis(np.linspace(0, 1, 8))
 rec_colors = rec_colors[[0,4,7],:]
+prep_colors = plt.cm.viridis(np.linspace(0, 1, 8))
+prep_colors = prep_colors[[2,4,6],:]
 cfg_colors = {"recording_type_colors": rec_colors,
             "cv_model_colors": cv_models,
+            "prep_colors": prep_colors,
             "mediapipe_color": "#ab6c82",
             "apple_color": "#f4d35e",}
 
@@ -98,7 +102,6 @@ def set_style(font_size: int = 24):
     Just some basic things I do before plotting.
     """
     mpl.rcParams['font.family'] = 'sans-serif'
-    mpl.rcParams['font.sans-serif'] = 'Open Sans Condensed'
     mpl.rcParams['font.size'] = font_size
     mpl.rcParams.update({'font.size': cfg_title_font})
     mpl.rcParams.update({'axes.labelsize': cfg_ax_font})

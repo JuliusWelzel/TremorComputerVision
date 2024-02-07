@@ -7,7 +7,7 @@ from scipy import signal
 from src.config import (dir_figdata, dir_figures,
                         cfg_colors, set_style)
 from src.MpHandAnalyst import MpHandAnalyst
-from src.utls import calculate_amplitudes, calculate_displacement, calculate_displacement_over_time
+from src.utls import calculate_amplitudes, calculate_displacement, calculate_displacement_over_time, plot_normalized_spectrogram
 import seaborn as sns
 
 # config plotting
@@ -16,7 +16,7 @@ colors_cvmodels = cfg_colors["cv_model_colors"]
 
 # start analysing mp_objeo
 mp_obj = MpHandAnalyst()
-mp_obj.process_video(r"figdata\amp_lin_increase_30s.avi")
+mp_obj.process_video(dir_figdata.joinpath("amp_lin_increase_30s.avi"))
 mp_obj.find_roi()
 freqs, specs, _ = mp_obj.frequency_estimations(to_plot=False)
 
@@ -29,7 +29,7 @@ ground_truth_amp["times"] = ground_truth_amp["frame"] / 30
 idx_oi_mp = [list(mp_obj.cfg_mp_labels).index(label_oi) for label_oi in ["12x", "12y"]]
 idx_oi_mp_z = [list(mp_obj.cfg_mp_labels).index(label_oi) for label_oi in ["12x", "12y", "12z"]]
 
-vi_data=pd.read_csv(r"figdata\sim_lin_amp_increase_appleCV.csv")[["middleTip_X","middleTip_Y"]]
+vi_data=pd.read_csv(dir_figdata.joinpath("sim_lin_amp_increase_appleCV.csv"))[["middleTip_X","middleTip_Y"]]
 
 # set the number of frames to drop from the end of the video
 n_frames_drop = 2
@@ -63,8 +63,6 @@ amplitudes_vi = calculate_amplitudes(vi_data.T) # point 12 x,y only (maybe z)
 displacment_vi = calculate_displacement(amplitudes_mp_norm, 30) # this blender video is 30 fps
 peak_times_vi,ampltidudes_vision=calculate_displacement_over_time(amplitudes_vi,30)
 
-colorblind = sns.color_palette("colorblind", 5)
-
 times_mp = np.linspace(0, len(amplitudes_mp_world)/30, len(amplitudes_mp_world) + 1)
 # plot the amplitude over frame
 
@@ -82,19 +80,19 @@ ax[3].plot(ground_truth_amp["times"].iloc[0::2],-zscore(ground_truth_amp["amplit
 ax[3].plot(ground_truth_amp["times"].iloc[1::2],-zscore(ground_truth_amp["amplitude"]).iloc[1::2],color="black",alpha=0.5,linestyle="dashed")
 ax[4].plot(ground_truth_amp["times"].iloc[0::2],-zscore(ground_truth_amp["amplitude"]).iloc[0::2],color="black",alpha=0.5,linestyle="dashed")
 ax[4].plot(ground_truth_amp["times"].iloc[1::2],-zscore(ground_truth_amp["amplitude"]).iloc[1::2],color="black",alpha=0.5,linestyle="dashed")
-ax[0].plot(times_mp,zscore(mp_world_amp_sum),color=colorblind[0],label="MP world")
+ax[0].plot(times_mp,zscore(mp_world_amp_sum),color=colors_cvmodels["MPworld"],label="MP world")
 ax[0].set_ylim(-3,3)
 ax[0].legend(loc="upper left")
-ax[1].plot(times_mp,zscore(mp_world_amp_sum_z),color=colorblind[1],label="MP world (with z axis)")
+ax[1].plot(times_mp,zscore(mp_world_amp_sum_z),color=colors_cvmodels["MPworld_z"],label="MP world (with z axis)")
 ax[1].set_ylim(-3,3)
 ax[1].legend(loc="upper left")
-ax[2].plot(times_mp,zscore(mp_norm_amp_sum),color=colorblind[2],label="MP norm")
+ax[2].plot(times_mp,zscore(mp_norm_amp_sum),color=colors_cvmodels["MPnorm"],label="MP norm")
 ax[2].set_ylim(-3,3)
 ax[2].legend(loc="upper left")
-ax[3].plot(times_mp,zscore(mp_norm_amp_sum_z),color=colorblind[3],label="MP norm (with z axis)")
+ax[3].plot(times_mp,zscore(mp_norm_amp_sum_z),color=colors_cvmodels["MPnorm_z"],label="MP norm (with z axis)")
 ax[3].set_ylim(-3,3)
 ax[3].legend(loc="upper left")
-ax[4].plot(times_mp,zscore(vi_amp_sum),color=colorblind[4],label="Vision")
+ax[4].plot(times_mp,zscore(vi_amp_sum),color=colors_cvmodels["Apple_VI"],label="Vision")
 ax[4].legend(loc="upper left")
 ax[4].set_ylim(-3,3)
 ax[4].set_xlabel("Time [s]")
@@ -106,70 +104,31 @@ ax[4].set_ylabel("Amplitude (z-scored)")
 
 plt.tight_layout()
 plt.legend()
-fig.savefig(dir_figures.joinpath("amp_over_frames_alternative_new.png"), dpi=300)
+fig.savefig(dir_figures.joinpath("amp_over_frames_alternative.png"), dpi=300)
 plt.show()
 
 
 srate=30
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy import signal
 
-def plot_normalized_spectrogram(signal_data, srate, ax, title, freq_range=None, num_segments=16):
-    """
-    Plots a normalized spectrogram on the given axes.
-
-    :param signal_data: Array of signal data.
-    :param srate: Sampling rate of the signal.
-    :param ax: Matplotlib axes to plot on.
-    :param title: Title for the subplot.
-    :param freq_range: Tuple (min_freq, max_freq) to set y-axis limits.
-    :param num_segments: Number of segments to normalize across.
-    """
-    # Compute the spectrogram
-    f, t, Sxx = signal.spectrogram(signal_data, srate, nperseg=1 * srate)
-
-    # Check if the spectrogram is large enough to be segmented
-    if Sxx.shape[1] < num_segments:
-        print(f"Warning: Not enough data points to divide into {num_segments} segments. Reducing number of segments.")
-        num_segments = Sxx.shape[1]
-
-    segment_length = Sxx.shape[1] // num_segments
-    Sxx_normalized = np.zeros_like(Sxx)
-
-    for i in range(num_segments):
-        start = i * segment_length
-        end = start + segment_length
-        if np.any(Sxx[:, start:end]):  # Check if the segment is not empty
-            segment_max = np.max(Sxx[:, start:end])
-            segment_min = np.min(Sxx[:, start:end])
-            Sxx_normalized[:, start:end] = (Sxx[:, start:end] - segment_min) / (segment_max - segment_min)
-
-    # Plotting
-    ax.pcolormesh(t, f, Sxx_normalized,cmap="viridis")
-    ax.set_ylabel('Frequency [Hz]')
-    ax.set_title(title)
-    if freq_range:
-        ax.set_ylim(freq_range)
 
 fig, ax = plt.subplots(10, 1, figsize=(20, 15), sharex=True)
-ax[0].plot(times_mp,zscore(mp_world_amp_sum),color=colorblind[0],label="MP world")
+ax[0].plot(times_mp,zscore(mp_world_amp_sum),color=colors_cvmodels["MPworld"],label="MP world")
 ax[0].set_ylim(-3,3)
 ax[0].legend()
 plot_normalized_spectrogram(mp_world_amp_sum,srate,ax[1],"MP world")
-ax[2].plot(times_mp,zscore(mp_world_amp_sum_z),color=colorblind[1],label="MP world (with z axis)")
+ax[2].plot(times_mp,zscore(mp_world_amp_sum_z),color=colors_cvmodels["MPworld_z"],label="MP world (with z axis)")
 ax[2].set_ylim(-3,3)
 ax[2].legend()
 plot_normalized_spectrogram(mp_world_amp_sum_z,srate,ax[3],"MP world (z-axis)")
-ax[4].plot(times_mp,zscore(mp_norm_amp_sum),color=colorblind[2],label="MP norm")
+ax[4].plot(times_mp,zscore(mp_norm_amp_sum),color=colors_cvmodels["MPnorm"],label="MP norm")
 ax[4].set_ylim(-3,3)
 ax[4].legend()
 plot_normalized_spectrogram(mp_norm_amp_sum,srate,ax[5],"MP norm")
-ax[6].plot(times_mp,zscore(mp_norm_amp_sum_z),color=colorblind[3],label="MP norm (with z axis)")
+ax[6].plot(times_mp,zscore(mp_norm_amp_sum_z),color=colors_cvmodels["MPnorm_z"],label="MP norm (with z axis)")
 ax[6].set_ylim(-3,3)
 ax[6].legend()
 plot_normalized_spectrogram(mp_norm_amp_sum_z,srate,ax[7],"MP norm (z-axis)")
-ax[8].plot(times_mp,zscore(vi_amp_sum),color=colorblind[4],label="Vision")
+ax[8].plot(times_mp,zscore(vi_amp_sum),color=colors_cvmodels["Apple_VI"],label="Vision")
 ax[8].set_ylim(-3,3)
 ax[8].legend()
 plot_normalized_spectrogram(vi_amp_sum,srate,ax[9],"Vision")
@@ -214,13 +173,6 @@ plt.show()
 # plot the amplitude over frame
 fig, ax = plt.subplots(4, 1, figsize=(20, 15), sharex=True)
 
-# Increase fontsize of all text to 20
-for a in ax:
-    a.tick_params(axis='both', labelsize=12)
-    a.set_title(a.get_title(), fontsize=20)
-    a.set_xlabel(a.get_xlabel(), fontsize=14)
-    a.set_ylabel(a.get_ylabel(), fontsize=14)
-    a.legend(fontsize=14)
 
 ax[0].plot(ground_truth_amp["times"], -zscore(ground_truth_amp["amplitude"]), label="Ground truth", color="grey")
 ax[0].plot(times_mp, zscore(mp_world_amp_sum), label="Mediapipe world", color = "#ab6c82")

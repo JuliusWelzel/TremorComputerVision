@@ -1,10 +1,12 @@
 from src.config import (cfg_ax_font, cfg_label_font, cfg_title_font, cfg_legend_font) # import font size
 from src.config import (cfg_colors) # import colors
-from src.config import (dir_figdata, dir_figures) # import figure directories
+from src.config import (dir_figdata, dir_figures, dir_tables) # import figure directories
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import scipy.stats as stats
+from scipy.stats import kruskal
+import scikit_posthocs as sp
 import numpy as np
 from pathlib import Path
 
@@ -53,7 +55,7 @@ for stage in stages:
             }, ignore_index=True)
 
 print(results_df_new)
-results_df_new.to_markdown(Path.joinpath(dir_figures,"table_1.md"))
+results_df_new.to_markdown(dir_tables.joinpath("table_1.md"))
 
 
 ## statistics, compare along the frameworks (VI,MP) and along the Pipelines (RAW, PCA, EMD) for both OMC and IMU error
@@ -90,8 +92,7 @@ print(p_value)
 stat,p_value=stats.mannwhitneyu(error_table["mp_imu_emd"],error_table["vi_imu_emd"])
 print(p_value)
 
-from scipy.stats import kruskal
-import scikit_posthocs as sp
+
 
 
 #Test MP mocap across pipelines.

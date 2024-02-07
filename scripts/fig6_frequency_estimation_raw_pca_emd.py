@@ -1,4 +1,4 @@
-from src.config import (cfg_ax_font, cfg_label_font, cfg_title_font, cfg_legend_font) # import font size
+from src.config import (cfg_ax_font, cfg_label_font, cfg_title_font, cfg_legend_font, set_style) # import font size
 from src.config import (cfg_colors) # import colors
 from src.config import (dir_figdata, dir_figures) # import figure directories
 
@@ -8,6 +8,11 @@ import seaborn as sns
 import scipy.stats as stats
 from pathlib import Path
 
+# set plotting configs
+set_style()
+colors_cv_models = cfg_colors["cv_model_colors"]
+color_mp = colors_cv_models["MPnorm"]  
+color_vi = colors_cv_models["Apple_VI"] 
 
 # Load the data
 file_path_new = Path.joinpath(dir_figdata,"human_peaks_table.csv")
@@ -44,7 +49,7 @@ for i, stage in enumerate(stages):
             paired_data = data_new[[mocap_stage_col, other_stage_col]].dropna()
 
             if len(paired_data) > 1:
-                sns.regplot(x=paired_data[mocap_stage_col], y=paired_data[other_stage_col], ax=ax, scatter_kws={'alpha':0.5}, label=f'{measurement_type}')
+                sns.regplot(x=paired_data[mocap_stage_col], y=paired_data[other_stage_col], ax=ax, scatter_kws={'alpha':0.5}, label=f'{measurement_type}', color=color_mp if measurement_type == 'Mp' else color_vi)
 
                 # Calculate the Kendall correlation coefficient
                 tau, p_value = stats.kendalltau(paired_data[mocap_stage_col], paired_data[other_stage_col])
@@ -70,7 +75,7 @@ for i, stage in enumerate(stages):
             paired_data = data_new[[imu_stage_col, other_stage_col]].dropna()
 
             if len(paired_data) > 1:
-                sns.regplot(x=paired_data[imu_stage_col], y=paired_data[other_stage_col], ax=ax, scatter_kws={'alpha':0.5}, label=f'{measurement_type}')
+                sns.regplot(x=paired_data[imu_stage_col], y=paired_data[other_stage_col], ax=ax, scatter_kws={'alpha':0.5}, label=f'{measurement_type}', color=color_mp if measurement_type == 'Mp' else color_vi)
 
                 # Calculate the Kendall correlation coefficient
                 tau, p_value = stats.kendalltau(paired_data[imu_stage_col], paired_data[other_stage_col])
