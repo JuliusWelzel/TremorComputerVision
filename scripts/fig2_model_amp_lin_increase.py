@@ -101,10 +101,14 @@ ax[1].set_ylabel("Amplitude (z-scored)")
 ax[2].set_ylabel("Amplitude (z-scored)")
 ax[3].set_ylabel("Amplitude (z-scored)")
 ax[4].set_ylabel("Amplitude (z-scored)")
-
+ax[0].text(-0.1,1.1,"A",transform=ax[0].transAxes, fontsize=22, fontweight='bold', va='top', ha='right')
+ax[1].text(-0.1,1.1,"B",transform=ax[1].transAxes, fontsize=22, fontweight='bold', va='top', ha='right')
+ax[2].text(-0.1,1.1,"C",transform=ax[2].transAxes, fontsize=22, fontweight='bold', va='top', ha='right')
+ax[3].text(-0.1,1.1,"D",transform=ax[3].transAxes, fontsize=22, fontweight='bold', va='top', ha='right')
+ax[4].text(-0.1,1.1,"E",transform=ax[4].transAxes, fontsize=22, fontweight='bold', va='top', ha='right')
 plt.tight_layout()
 plt.legend()
-fig.savefig(dir_figures.joinpath("amp_over_frames_alternative.png"), dpi=300)
+fig.savefig(dir_figures.joinpath("figure_2.png"), dpi=300)
 plt.show()
 
 
@@ -283,35 +287,3 @@ plt.show()
 fig.savefig(dir_figures.joinpath("freq_over_frames.png"), dpi=600)
 
 
-
-import pandas as pd
-import matplotlib.pyplot as plt
-
-# Load the data from the CSV file
-file_path = 'figdata/sim_amp_lin_ground_truth.csv'
-data = pd.read_csv(file_path)
-
-# Assuming the CSV file has columns named 'Time' and 'Amplitude'
-time = data.iloc[:, 0]  # First column as time
-amplitude = data.iloc[:, 1]  # Second column as amplitude
-amp_max=data.iloc[1::2]
-amp_min=data.iloc[0::2]
-
-# Create the plot
-plt.figure(figsize=(10, 6))
-plt.plot(amp_max.iloc[:,0],amp_max.iloc[:,1])
-plt.plot(amp_min.iloc[:,0],amp_min.iloc[:,1])
-# Plot the signal
-plt.plot(time, amplitude, label='Signal')
-
-# Shade the area under the signal
-plt.fill_between(time, amplitude, color='skyblue', alpha=0.4)
-
-# Adding labels and title
-plt.xlabel('Time')
-plt.ylabel('Amplitude')
-plt.title('Signal with Shaded Area')
-plt.legend()
-
-# Show the plot
-plt.show()
