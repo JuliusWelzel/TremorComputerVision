@@ -38,7 +38,7 @@ freq_vs_amp["mocap_displacement"]=np.log(amp_table["mocap_displacement"])
 
 
 #Plot data for raw, pca, emd for MP and VI. Calculate Kendall correlation.
-fig,axes= plt.subplots(nrows=1, ncols=3, figsize=(20, 15))
+fig,axes= plt.subplots(nrows=1, ncols=3, figsize=(25, 15))
 sns.regplot(x='mocap_displacement', y='mp_raw_error', data=freq_vs_amp, 
             lowess=False, scatter=True, label="MP",color=color_vi,ax=axes[0])
 sns.regplot(x='mocap_displacement', y='apple_raw_error', data=freq_vs_amp.dropna(subset=['apple_raw_error']), 
@@ -92,5 +92,5 @@ axes[2].text(0.05,0.75 ,
                       transform=axes[2].transAxes)
 
 plt.legend()
-plt.savefig(dir_figures.joinpath("figure_7"),dpi=300)
+plt.savefig(dir_figures.joinpath("suppl_figure_7"),dpi=300)
 plt.show()
