@@ -138,7 +138,7 @@ for i in range(n_angles_total):
 displacement_per_angle = np.reshape(displament_per_angle, (n_angles_side, n_angles_side))
 
 fig, axs = plt.subplots(figsize=(10,10))
-image = axs.imshow((displacement_per_angle), cmap='magma')
+image = axs.imshow((displacement_per_angle/100), cmap='magma') #divide by 100 to make it comparable to MP output
 
 # Set the x-axis tick labels
 axs.set_xticks(np.arange(len(angles)))
@@ -156,7 +156,7 @@ axs.text(2, 8, '3', ha='center', va='center', color='white', fontsize=20)
 
 # Add color bar
 cbar = fig.colorbar(image)
-image.set_clim(0, 70) ## set lim to avoid noise at the edges.
+image.set_clim(0, 0.7) ## set lim to avoid noise at the edges.
 
 # Set the color bar label
 cbar.set_label('Vision displacement')
