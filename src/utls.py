@@ -1,7 +1,8 @@
+import cv2
+import matplotlib.pyplot as plt
 import numpy as np
 from scipy import signal
 import pandas as pd
-import cv2
 
 from src.config import cfg_bandpass_fmin, cfg_bandpass_fmax
 
@@ -319,13 +320,16 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order=5, axis = 0):
 def plot_normalized_spectrogram(signal_data, srate, ax, title, freq_range=None, num_segments=16):
     """
     Plots a normalized spectrogram on the given axes.
-
-    :param signal_data: Array of signal data.
-    :param srate: Sampling rate of the signal.
-    :param ax: Matplotlib axes to plot on.
-    :param title: Title for the subplot.
-    :param freq_range: Tuple (min_freq, max_freq) to set y-axis limits.
-    :param num_segments: Number of segments to normalize across.
+    
+    Args:
+        signal_data (array-like): Array of signal data.
+        srate (int): Sampling rate of the signal.
+        ax (matplotlib.axes.Axes): Matplotlib axes to plot on.
+        title (str): Title for the subplot.
+        freq_range (tuple, optional): Tuple (min_freq, max_freq) to set y-axis limits. Defaults to None.
+        num_segments (int, optional): Number of segments to normalize across. Defaults to 16.
+    Raises:
+        ValueError: If the number of segments is greater than the number of data points in the spectrogram.
     """
     # Compute the spectrogram
     f, t, Sxx = signal.spectrogram(signal_data, srate, nperseg=1 * srate)
@@ -335,20 +339,25 @@ def plot_normalized_spectrogram(signal_data, srate, ax, title, freq_range=None, 
         print(f"Warning: Not enough data points to divide into {num_segments} segments. Reducing number of segments.")
         num_segments = Sxx.shape[1]
 
+    # Determine the length of each segment
     segment_length = Sxx.shape[1] // num_segments
+    # Initialize an array to hold the normalized spectrogram
     Sxx_normalized = np.zeros_like(Sxx)
 
+    # Normalize each segment of the spectrogram
     for i in range(num_segments):
-        start = i * segment_length
-        end = start + segment_length
+        start = i * segment_length  # Start index of the segment
+        end = start + segment_length  # End index of the segment
         if np.any(Sxx[:, start:end]):  # Check if the segment is not empty
-            segment_max = np.max(Sxx[:, start:end])
-            segment_min = np.min(Sxx[:, start:end])
+            segment_max = np.max(Sxx[:, start:end])  # Maximum value in the segment
+            segment_min = np.min(Sxx[:, start:end])  # Minimum value in the segment
+            # Normalize the segment
             Sxx_normalized[:, start:end] = (Sxx[:, start:end] - segment_min) / (segment_max - segment_min)
 
-    # Plotting
-    ax.pcolormesh(t, f, Sxx_normalized,cmap="viridis")
-    ax.set_ylabel('Frequency [Hz]')
-    ax.set_title(title)
+    # Plot the normalized spectrogram
+    cax = ax.pcolormesh(t, f, Sxx_normalized, cmap="viridis")
+    ax.set_ylabel('Frequency [Hz]')  # Set y-axis label
+    ax.set_title(title)  # Set the title of the plot
     if freq_range:
-        ax.set_ylim(freq_range)
+        ax.set_ylim(freq_range)  # Set the frequency range if provided
+    plt.colorbar(cax, ax=ax)  # Add a colorbar to the plot
